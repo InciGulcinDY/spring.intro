@@ -16,13 +16,43 @@ public class PersonController {
     }
 
     @GetMapping("{id}")
-    public void getBeyId(@PathVariable int id){
-        //Araştırma konusu!
-        //stream API
+    public Person getBeyId(@PathVariable int id){
+        Person person = personList
+                .stream()
+                .filter(p -> p.id ==id )
+                .findFirst()
+                .orElseThrow();
+        return person;
+
+
     }
 
     @PostMapping
     public void add(@RequestBody Person person){
         personList.add(person);
+    }
+
+    @PutMapping
+    public String update(@RequestParam Person person){
+        Person personToUpdate = personList
+                .stream()
+                .filter(p -> p.id == person.id)
+                .findFirst()
+                .orElseThrow();
+        personToUpdate.name = person.name;
+        personToUpdate.surname = person.surname;
+        return "Updated";
+
+    }
+
+    @DeleteMapping("{id}")
+    public String delete(@PathVariable int id){
+        Person personToDelete = personList
+                .stream()
+                .filter(p -> p.id==id)
+                .findFirst()
+                .orElseThrow();
+        personList.remove(personToDelete);
+        return "Deleted";
     }
 }
