@@ -1,44 +1,25 @@
 package com.tobeto.a.spring.intro.controllers;
 
-import com.tobeto.a.spring.intro.entities.Brand;
-import com.tobeto.a.spring.intro.repositories.BrandRepository;
+import com.tobeto.a.spring.intro.Services.abstracts.BrandService;
+import com.tobeto.a.spring.intro.Services.dtos.brand.requests.AddBrandRequest;
+
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+//Single Responsibility
 @RestController
 @RequestMapping("api/brands")
 public class BrandsController {
-    private final BrandRepository brandRepository;
+    //Dependency Injection
+    private BrandService brandService;
 
-    public BrandsController(BrandRepository brandRepository) {
-        this.brandRepository = brandRepository;
-    }
-
-    @GetMapping
-    public List<Brand> getAll(){
-        List<Brand> brands = brandRepository.findAll();
-        return brands;
-    }
-
-    @GetMapping("{id}")
-    public Brand getBeyId(@PathVariable int id){
-        //optional -- null da olabilir. Id de veri olmayabilir!!!
-        return brandRepository.findById(id).orElseThrow();
+    public BrandsController(BrandService brandService) {
+        this.brandService = brandService;
     }
 
     @PostMapping
-    public void add(@RequestBody Brand brand){
-        brandRepository.save(brand);
+    public void add(@RequestBody AddBrandRequest addBrandRequest){
+
     }
-
-    @DeleteMapping("{id}")
-    public void  delete(@PathVariable int id){
-        Brand brandToDelete = brandRepository.findById(id).orElseThrow();
-        brandRepository.delete(brandToDelete);
-    }
-
-    //update
-
 
 }
