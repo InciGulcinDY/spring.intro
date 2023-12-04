@@ -10,18 +10,19 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class BrandManager implements BrandService {
+public class BrandsManager implements BrandService {
+
     private BrandRepository brandRepository;
 
-    public BrandManager(BrandRepository brandRepository) {
+    public BrandsManager(BrandRepository brandRepository) {
         this.brandRepository = brandRepository;
     }
 
     @Override
     public void add(AddBrandRequest request) {
-        if (request.getName().length() < 3) {
-            throw new RuntimeException();
-        }
+        // iş akışı çalıştıktan sonra..
+        if(request.getName().length() < 3)
+            throw new RuntimeException("Marka ismi 3 haneden küçük olamaz");
 
         Brand brand = new Brand();
         brand.setName(request.getName());
@@ -36,18 +37,28 @@ public class BrandManager implements BrandService {
     @Override
     public List<GetListBrandResponse> getByNameDto(String name) {
         //TODO: Yaklaşım 1: Repositoryden List<Brand>'i alıp Service katmanında Mapleyerek DTO türüne çevirmek.
-        /*
-        List<Brand> brands = brandRepository.findByNameStartingWith(name);
+
+       /*
+       List<Brand> brands = brandRepository.findByNameStartingWith(name);
         List<GetListBrandResponse> dtos = new ArrayList<>();
         for (Brand brand: brands) {
-            dtos.add(new GetListBrandResponse(brand.getName()));
+            dtos.add(new GetListBrandResponse(brand.getId(), brand.getName()));
         }
-        return dtos
+        return dtos;
         */
+        /*
+        brandRepository.findAll().stream()
+                .filter((brand) -> brand.getName().equals(name))
+                .map((brand) -> new GetListBrandResponse(brand.getId(), brand.getName()))
+                .toList();
+                */
+
+
+        return brandRepository.findByNameStartingWith(name).stream().map((brand) -> new GetListBrandResponse(brand.getId(), brand.getName())).toList();
 
         //TODO: Yaklaşım 2: Repositoryde List<GetListBrandResponse> dönebilen yeni bir method oluşturmak.
-        return brandRepository.findByName(name);
+        // return brandRepository.findByName(name);
     }
 }
-// Custom Queryler yazmak -!-
-// Stream API
+
+// Lambda Expression & Stream API

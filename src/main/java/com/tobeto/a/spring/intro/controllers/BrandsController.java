@@ -8,11 +8,11 @@ import com.tobeto.a.spring.intro.entities.Brand;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-//Single Responsibility
+// Single Responsibility
 @RestController
 @RequestMapping("api/brands")
 public class BrandsController {
-    //Dependency Injection
+    // BAĞIMLILIKLAR DAİMA SOYUT NESNELER ÜZERİNDEN
     private BrandService brandService;
 
     public BrandsController(BrandService brandService) {
@@ -20,8 +20,8 @@ public class BrandsController {
     }
 
     @PostMapping
-    public void add(@RequestBody AddBrandRequest addBrandRequest){
-
+    public void add(@RequestBody AddBrandRequest request){
+        brandService.add(request);
     }
     @GetMapping()
     public List<Brand> getByName(@RequestParam String name){
